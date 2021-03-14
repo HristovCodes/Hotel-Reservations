@@ -1,42 +1,63 @@
-import React, { useContext, createContext, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
-  useHistory,
-  useLocation,
 } from "react-router-dom";
 import firebase from "../../firebase.js";
+import User from "../User/index";
+import Client from "../Client/index";
+import Room from "../Room/index";
+import Reservation from "../Reservation/index";
+import NoMatch from "../NoMatch/index";
+import Login from "../Login/index";
+import Main from "../Main/index";
 
 export default function Routing() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        // User is signed in.
+        setUser(user);
+      }
+    });
+  });
+
   return (
     <Router>
       <div>
-        <ul>
-          <li>
-            <Link to="/Hotel-Reservations/User">Users Database</Link>
-          </li>
-          <li>
-            <Link to="/Hotel-Reservations/Client">Clients Database</Link>
-          </li>
-          <li>
-            <Link to="/Hotel-Reservations/Room">Rooms Database</Link>
-          </li>
-          <li>
-            <Link to="/Hotel-Reservations/Reservation">
-              Reservations Database
-            </Link>
-          </li>
-        </ul>
+        <Switch>
+          <PrivateRoute user={user} exact path="/Hotel-Reservations/">
+            <Main></Main>
+          </PrivateRoute>
+          <PrivateRoute user={user} path="/Hotel-Reservations/User">
+            <User></User>
+          </PrivateRoute>
+          <PrivateRoute user={user} path="/Hotel-Reservations/Client">
+            <Client></Client>
+          </PrivateRoute>
+          <PrivateRoute user={user} path="/Hotel-Reservations/Room">
+            <Room></Room>
+          </PrivateRoute>
+          <PrivateRoute user={user} path="/Hotel-Reservations/Reservation">
+            <Reservation></Reservation>
+          </PrivateRoute>
+          <Route path="/Hotel-Reservations/Login">
+            <Login></Login>
+          </Route>
+          <Route path="*">
+            <NoMatch></NoMatch>
+          </Route>
+        </Switch>
       </div>
     </Router>
   );
 }
 
-function PrivateRoute({ children, ...rest }) {
-  let user = firebase.userData;
+function PrivateRoute({ user, children, ...rest }) {
   return (
     <Route {...rest}>
       {user ? children : <Redirect to={"/Hotel-Reservations/Login"}></Redirect>}
