@@ -37,6 +37,6 @@ let event = (title, date, desc, pic, location, fee) => {
 export default {
   submitEvent: event,
   database: firebase.database(),
-  auth: firebase.auth(),
+  auth: firebase.auth,
   userData: firebase.auth().currentUser,
 };
