@@ -15,28 +15,50 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-let event = (title, date, desc, pic, location, fee) => {
-  if (title && date && desc && pic && location) {
-    let newPostKey = firebase.database().ref().child("events").push().key;
-    let data = {};
-    data[newPostKey] = {
-      eventTitle: title,
-      eventDate: date,
-      eventDesc: desc,
-      eventUrl: pic,
-      eventLocation: location,
-      eventEntryFee: fee,
-    };
-    firebase
-      .database()
-      .ref("events/" + date)
-      .update(data);
-  }
+const setUser = (
+  id,
+  username,
+  firstname,
+  middlename,
+  lastname,
+  phonenumber,
+  email,
+  dateemployed,
+  active,
+  releasedate
+) => {
+  let data = {};
+  data[id] = {
+    id: id,
+    username: username,
+    firstname: firstname,
+    middlename: middlename,
+    lastname: lastname,
+    phonenumber: phonenumber,
+    email: email,
+    dateemployed: dateemployed,
+    active: active,
+    releasedate: releasedate,
+  };
+  firebase.database().ref("user/").update(data);
+};
+
+const getUser = (query = "id") => {
+  // query can be: "id", "username", "firstname", "middlename", "lastname", "email", ""
+  firebase
+    .database()
+    .child("user/")
+    .orderByChild(query)
+    .get()
+    .then((data) => {
+      if (data.exists()) return data.val();
+      return null;
+    });
 };
 
 export default {
-  submitEvent: event,
-  database: firebase.database(),
+  setUser: setUser,
+  getUser: getUser,
+  database: firebase.database,
   auth: firebase.auth,
-  userData: firebase.auth().currentUser,
 };
