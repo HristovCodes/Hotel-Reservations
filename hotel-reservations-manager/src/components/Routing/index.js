@@ -30,6 +30,9 @@ export default function Routing() {
     <Router>
       <div>
         <Switch>
+          <Route exact path="/">
+            <Redirect to="/Hotel-Reservations/"></Redirect>
+          </Route>
           <PrivateRoute user={user} exact path="/Hotel-Reservations/">
             <Main></Main>
           </PrivateRoute>
