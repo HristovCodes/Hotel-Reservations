@@ -18,15 +18,17 @@ export default function Routing() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
+    firebase.auth().onAuthStateChanged((u) => {
+      if (u) {
         // User is signed in.
-        setUser(user);
+        setUser(u);
+      } else {
+        setUser("anon");
       }
     });
   });
 
-  return (
+  return user ? (
     <Router>
       <div>
         <Switch>
@@ -57,13 +59,19 @@ export default function Routing() {
         </Switch>
       </div>
     </Router>
+  ) : (
+    <div>Loading...</div>
   );
 }
 
 function PrivateRoute({ user, children, ...rest }) {
   return (
     <Route {...rest}>
-      {user ? children : <Redirect to={"/Hotel-Reservations/Login"}></Redirect>}
+      {user != "anon" && user ? (
+        children
+      ) : (
+        <Redirect to={"/Hotel-Reservations/Login"}></Redirect>
+      )}
     </Route>
   );
 }
