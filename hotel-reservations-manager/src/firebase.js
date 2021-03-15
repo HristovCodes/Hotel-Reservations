@@ -40,20 +40,32 @@ const setUser = (
     active: active,
     releasedate: releasedate,
   };
-  firebase.database().ref("user/").update(data);
-};
+  // to do:
+  // also needs to create a auth object (sign in the user)
 
-const getUser = (query = "id") => {
-  // query can be: "id", "username", "firstname", "middlename", "lastname", "email", ""
   firebase
     .database()
+    .ref("user/")
+    .update(data)
+    .catch((e) => console.log(`${e.code}\n${e.message}`));
+};
+
+const getUser = async (query) => {
+  // query can be: "id", "username", "firstname", "middlename", "lastname", "email", ""
+  let response = await firebase
+    .database()
+    .ref()
     .child("user/")
     .orderByChild(query)
-    .get()
-    .then((data) => {
-      if (data.exists()) return data.val();
-      return null;
-    });
+    .limitToFirst(10)
+    .get();
+
+  if (response.code) {
+    throw new Error(response.code);
+  } else {
+    let data = await response.val();
+    return data;
+  }
 };
 
 export default {
