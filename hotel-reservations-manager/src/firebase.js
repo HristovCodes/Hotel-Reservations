@@ -50,14 +50,14 @@ const setUser = (
     .catch((e) => console.log(`${e.code}\n${e.message}`));
 };
 
-const getUser = async (query) => {
+const getUser = async (query, ammount) => {
   // query can be: "id", "username", "firstname", "middlename", "lastname", "email", ""
   let response = await firebase
     .database()
     .ref()
     .child("user/")
     .orderByChild(query)
-    .limitToFirst(10)
+    .limitToFirst(ammount)
     .get();
 
   if (response.code) {
