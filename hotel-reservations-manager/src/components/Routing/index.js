@@ -13,6 +13,8 @@ import Reservation from "../Reservation/index";
 import NoMatch from "../NoMatch/index";
 import Login from "../Login/index";
 import Main from "../Main/index";
+import "./styles.scss";
+import "normalize.css";
 
 export default function Routing() {
   const [user, setUser] = useState(null);
@@ -30,7 +32,7 @@ export default function Routing() {
 
   return user ? (
     <Router>
-      <div>
+      <div className="main">
         <Switch>
           <Route exact path="/">
             <Redirect to="/Hotel-Reservations/"></Redirect>

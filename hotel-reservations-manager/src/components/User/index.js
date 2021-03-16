@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import firebase from "../../firebase";
+import "./styles.scss";
 
 export default function User() {
   const [users, setUsers] = useState();
@@ -15,9 +16,9 @@ export default function User() {
   const [releaseDate, setReleaseDate] = useState(null);
 
   // takes care of the initial call to the db to get all the users
-  const pullUsers = () => {
+  const pullUsers = (pagination) => {
     firebase
-      .getUser("id")
+      .getUser("username", pagination)
       .then((u) => {
         setUsers(u);
       })
@@ -25,7 +26,7 @@ export default function User() {
   };
 
   useEffect(() => {
-    if (!users) pullUsers();
+    if (!users) pullUsers(10);
   });
 
   const addUser = (e) => {
@@ -46,20 +47,20 @@ export default function User() {
 
   const formatUser = (user) => {
     return user ? (
-      <li key={user.id}>
-        <hr></hr>
+      <span key={user.id}>
         <p>{user.id}</p>
         <p>{user.username}</p>
         <p>{user.firstname}</p>
         <p>{user.middlename}</p>
         <p>{user.lastname}</p>
-        <p>{user.phonenumber}</p>
-        <p>{user.email}</p>
+        <p>{user.email.slice(0, user.email.indexOf("@"))}</p>
+        <p className="action">Edit</p>
+        <p className="action">Delete</p>
+        {/* <p>{user.phonenumber}</p>
         <p>{user.dateemployed}</p>
         <p>{user.active.toString()}</p>
-        <p>{user.releasedate}</p>
-        <hr></hr>
-      </li>
+        <p>{user.releasedate}</p> */}
+      </span>
     ) : (
       ""
     );
@@ -68,7 +69,7 @@ export default function User() {
   return (
     <div>
       <h2>Add users:</h2>
-      <form onSubmit={addUser}>
+      <form className="usersForm" onSubmit={addUser}>
         <label htmlFor="id">ЕГН:</label>
         <input
           onChange={(e) => {
@@ -134,22 +135,30 @@ export default function User() {
           type="date"
         ></input>
         <label htmlFor="active">Статус:</label>
-        <input
-          onChange={(e) => {
-            setActive(true);
-          }}
-          name="active"
-          type="radio"
-          value="Активен"
-        ></input>
-        <input
-          onChange={(e) => {
-            setActive(false);
-          }}
-          name="active"
-          type="radio"
-          value="Уволнен"
-        ></input>
+        <div>
+          <input
+            onChange={(e) => {
+              setActive(true);
+            }}
+            name="active"
+            id="act1"
+            type="radio"
+            value="Активен"
+          ></input>
+          <label htmlFor="act1">Активен</label>
+        </div>
+        <div>
+          <input
+            onChange={(e) => {
+              setActive(false);
+            }}
+            name="active"
+            id="act2"
+            type="radio"
+            value="Уволнен"
+          ></input>
+          <label htmlFor="act2">Не активен</label>
+        </div>
         <label htmlFor="releaseDate">
           <span>Пуснат от длъжност на:</span>
         </label>
@@ -163,9 +172,45 @@ export default function User() {
         <button type="submit">Добави</button>
       </form>
       <h1>Users:</h1>
-      <ul>
+      <div>
+        <button
+          type="button"
+          onClick={() => {
+            pullUsers(10);
+          }}
+        >
+          10
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            pullUsers(25);
+          }}
+        >
+          25
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            pullUsers(50);
+          }}
+        >
+          50
+        </button>
+      </div>
+      <div className="usersList">
+        <span className="columns">
+          <p>ID</p>
+          <p>username</p>
+          <p>firstName</p>
+          <p>middleName</p>
+          <p>lastName</p>
+          <p>email</p>
+          <p>Edit</p>
+          <p>Delete</p>
+        </span>
         {users ? Object.values(users).map((u) => formatUser(u)) : "Loading..."}
-      </ul>
+      </div>
     </div>
   );
 }
