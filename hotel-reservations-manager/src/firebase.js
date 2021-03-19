@@ -15,7 +15,7 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-const setUser = (
+export function setUser(
   id,
   username,
   firstname,
@@ -26,9 +26,9 @@ const setUser = (
   dateemployed,
   active,
   releasedate
-) => {
+) {
   let data = {};
-  data[id] = {
+  data[email.slice(0, email.indexOf("@"))] = {
     id: id,
     username: username,
     firstname: firstname,
@@ -48,9 +48,9 @@ const setUser = (
     .ref("user/")
     .update(data)
     .catch((e) => console.log(`${e.code}\n${e.message}`));
-};
+}
 
-const getUser = async (query, ammount) => {
+export async function getUser(query, ammount) {
   // query can be: "id", "username", "firstname", "middlename", "lastname", "email", ""
   let response = await firebase
     .database()
@@ -62,13 +62,17 @@ const getUser = async (query, ammount) => {
   if (response.code) {
     throw new Error(response.code);
   } else {
-    return response;
+    const userData = [];
+    response.forEach((v) => {
+      userData.push(v.val());
+    });
+    return userData;
   }
-};
+}
 
-export default {
-  setUser: setUser,
-  getUser: getUser,
+const firebaseInstance = {
   database: firebase.database,
   auth: firebase.auth,
 };
+
+export default firebaseInstance;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import firebase from "../../firebase";
+import { getUser, setUser } from "../../firebase";
 import "./styles.scss";
 
 export default function User() {
@@ -17,15 +17,9 @@ export default function User() {
 
   // takes care of the initial call to the db to get all the users
   const pullUsers = (sorting, pagination) => {
-    firebase
-      .getUser(sorting, pagination)
+    getUser(sorting, pagination)
       .then((u) => {
-        // receives a data snapshot that needs to be iterated through later
-        const userData = [];
-        u.forEach((v) => {
-          userData.push(v.val());
-        });
-        setUsers(userData);
+        setUsers(u);
       })
       .catch((e) => console.log(e));
   };
@@ -35,8 +29,9 @@ export default function User() {
   });
 
   const addUser = (e) => {
+    e.preventDefault();
     e.target.reset();
-    firebase.setUser(
+    setUser(
       id,
       username,
       firstName,
