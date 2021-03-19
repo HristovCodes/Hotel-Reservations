@@ -54,17 +54,15 @@ const getUser = async (query, ammount) => {
   // query can be: "id", "username", "firstname", "middlename", "lastname", "email", ""
   let response = await firebase
     .database()
-    .ref()
-    .child("user/")
+    .ref("user/")
     .orderByChild(query)
     .limitToFirst(ammount)
-    .get();
+    .once("value");
 
   if (response.code) {
     throw new Error(response.code);
   } else {
-    let data = await response.val();
-    return data;
+    return response;
   }
 };
 

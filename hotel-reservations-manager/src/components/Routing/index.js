@@ -69,7 +69,7 @@ export default function Routing() {
 function PrivateRoute({ user, children, ...rest }) {
   return (
     <Route {...rest}>
-      {user != "anon" && user ? (
+      {user !== "anon" && user ? (
         children
       ) : (
         <Redirect to={"/Hotel-Reservations/Login"}></Redirect>

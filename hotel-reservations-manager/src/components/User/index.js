@@ -16,17 +16,22 @@ export default function User() {
   const [releaseDate, setReleaseDate] = useState(null);
 
   // takes care of the initial call to the db to get all the users
-  const pullUsers = (pagination) => {
+  const pullUsers = (sorting, pagination) => {
     firebase
-      .getUser("username", pagination)
+      .getUser(sorting, pagination)
       .then((u) => {
-        setUsers(u);
+        // receives a data snapshot that needs to be iterated through later
+        const userData = [];
+        u.forEach((v) => {
+          userData.push(v.val());
+        });
+        setUsers(userData);
       })
       .catch((e) => console.log(e));
   };
 
   useEffect(() => {
-    if (!users) pullUsers(10);
+    if (!users) pullUsers("id", 10);
   });
 
   const addUser = (e) => {
@@ -176,7 +181,7 @@ export default function User() {
         <button
           type="button"
           onClick={() => {
-            pullUsers(10);
+            pullUsers("id", 10);
           }}
         >
           10
@@ -184,7 +189,7 @@ export default function User() {
         <button
           type="button"
           onClick={() => {
-            pullUsers(25);
+            pullUsers("id", 25);
           }}
         >
           25
@@ -192,7 +197,7 @@ export default function User() {
         <button
           type="button"
           onClick={() => {
-            pullUsers(50);
+            pullUsers("id", 50);
           }}
         >
           50
@@ -200,16 +205,52 @@ export default function User() {
       </div>
       <div className="usersList">
         <span className="columns">
-          <p>ID</p>
-          <p>username</p>
-          <p>firstName</p>
-          <p>middleName</p>
-          <p>lastName</p>
-          <p>email</p>
+          <p
+            onClick={() => {
+              pullUsers("id", 10);
+            }}
+          >
+            ID
+          </p>
+          <p
+            onClick={() => {
+              pullUsers("username", 10);
+            }}
+          >
+            username
+          </p>
+          <p
+            onClick={() => {
+              pullUsers("firstname", 10);
+            }}
+          >
+            firstName
+          </p>
+          <p
+            onClick={() => {
+              pullUsers("middlename", 10);
+            }}
+          >
+            middleName
+          </p>
+          <p
+            onClick={() => {
+              pullUsers("lastname", 10);
+            }}
+          >
+            lastName
+          </p>
+          <p
+            onClick={() => {
+              pullUsers("email", 10);
+            }}
+          >
+            email
+          </p>
           <p>Edit</p>
           <p>Delete</p>
         </span>
-        {users ? Object.values(users).map((u) => formatUser(u)) : "Loading..."}
+        {users ? users.map((u) => formatUser(u)) : "Loading..."}
       </div>
     </div>
   );

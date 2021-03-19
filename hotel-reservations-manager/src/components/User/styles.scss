@@ -3,6 +3,9 @@
   flex-direction: column;
   .columns {
     font-weight: 600;
+    p {
+      cursor: pointer;
+    }
   }
   span {
     display: flex;
