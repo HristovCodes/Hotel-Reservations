@@ -1,0 +1,42 @@
+.usersList {
+  display: flex;
+  flex-direction: column;
+  .columns {
+    font-weight: 600;
+    p {
+      cursor: pointer;
+    }
+  }
+  span {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    .action {
+      font-weight: 600;
+      color: rgb(40, 233, 169);
+      cursor: pointer;
+    }
+
+    p {
+      padding: 5px 0;
+      margin: 10px 0;
+      width: 150px;
+      text-align: center;
+    }
+  }
+}
+
+.usersForm {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  label {
+    font-weight: 600;
+  }
+  input {
+  }
+  button {
+  }
+}

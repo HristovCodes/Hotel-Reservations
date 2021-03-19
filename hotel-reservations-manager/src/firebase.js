@@ -15,28 +15,64 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-let event = (title, date, desc, pic, location, fee) => {
-  if (title && date && desc && pic && location) {
-    let newPostKey = firebase.database().ref().child("events").push().key;
-    let data = {};
-    data[newPostKey] = {
-      eventTitle: title,
-      eventDate: date,
-      eventDesc: desc,
-      eventUrl: pic,
-      eventLocation: location,
-      eventEntryFee: fee,
-    };
-    firebase
-      .database()
-      .ref("events/" + date)
-      .update(data);
+export function setUser(
+  id,
+  username,
+  firstname,
+  middlename,
+  lastname,
+  phonenumber,
+  email,
+  dateemployed,
+  active,
+  releasedate
+) {
+  let data = {};
+  data[email.slice(0, email.indexOf("@"))] = {
+    id: id,
+    username: username,
+    firstname: firstname,
+    middlename: middlename,
+    lastname: lastname,
+    phonenumber: phonenumber,
+    email: email,
+    dateemployed: dateemployed,
+    active: active,
+    releasedate: releasedate,
+  };
+  // to do:
+  // also needs to create a auth object (sign in the user)
+
+  firebase
+    .database()
+    .ref("user/")
+    .update(data)
+    .catch((e) => console.log(`${e.code}\n${e.message}`));
+}
+
+export async function getUser(query, ammount) {
+  // query can be: "id", "username", "firstname", "middlename", "lastname", "email", ""
+  let response = await firebase
+    .database()
+    .ref("user/")
+    .orderByChild(query)
+    .limitToFirst(ammount)
+    .once("value");
+
+  if (response.code) {
+    throw new Error(response.code);
+  } else {
+    const userData = [];
+    response.forEach((v) => {
+      userData.push(v.val());
+    });
+    return userData;
   }
+}
+
+const firebaseInstance = {
+  database: firebase.database,
+  auth: firebase.auth,
 };
 
-export default {
-  submitEvent: event,
-  database: firebase.database(),
-  auth: firebase.auth,
-  userData: firebase.auth().currentUser,
-};
+export default firebaseInstance;

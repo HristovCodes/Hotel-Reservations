@@ -13,23 +13,30 @@ import Reservation from "../Reservation/index";
 import NoMatch from "../NoMatch/index";
 import Login from "../Login/index";
 import Main from "../Main/index";
+import "./styles.scss";
+import "normalize.css";
 
 export default function Routing() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
+    firebase.auth().onAuthStateChanged((u) => {
+      if (u) {
         // User is signed in.
-        setUser(user);
+        setUser(u);
+      } else {
+        setUser("anon");
       }
     });
   });
 
-  return (
+  return user ? (
     <Router>
-      <div>
+      <div className="main">
         <Switch>
+          <Route exact path="/">
+            <Redirect to="/Hotel-Reservations/"></Redirect>
+          </Route>
           <PrivateRoute user={user} exact path="/Hotel-Reservations/">
             <Main></Main>
           </PrivateRoute>
@@ -54,13 +61,19 @@ export default function Routing() {
         </Switch>
       </div>
     </Router>
+  ) : (
+    <div>Loading...</div>
   );
 }
 
 function PrivateRoute({ user, children, ...rest }) {
   return (
     <Route {...rest}>
-      {user ? children : <Redirect to={"/Hotel-Reservations/Login"}></Redirect>}
+      {user !== "anon" && user ? (
+        children
+      ) : (
+        <Redirect to={"/Hotel-Reservations/Login"}></Redirect>
+      )}
     </Route>
   );
 }
