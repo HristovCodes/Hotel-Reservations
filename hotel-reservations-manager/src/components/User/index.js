@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getUser, setUser } from "../../firebase";
+import { orderData, setData, deleteData } from "../../firebase";
 import "./styles.scss";
 
 export default function User() {
   const [users, setUsers] = useState();
+  const [search, setSearch] = useState();
   const [id, setID] = useState("");
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -15,55 +16,88 @@ export default function User() {
   const [active, setActive] = useState(false);
   const [releaseDate, setReleaseDate] = useState(null);
 
+  useEffect(() => {
+    if (!users) pullUsers("id", 10);
+  });
+
+  const searchUser = (query) => {
+    let temp = users.slice();
+    let matches = [];
+    temp.forEach((u) => {
+      if (Object.values(u).includes(query)) {
+        matches.push(u);
+      }
+    });
+    if (matches.length > 0) {
+      return setSearch(matches);
+    }
+    setSearch(undefined);
+  };
+
   // takes care of the initial call to the db to get all the users
   const pullUsers = (sorting, pagination) => {
-    getUser(sorting, pagination)
+    orderData("user", sorting, pagination)
       .then((u) => {
         setUsers(u);
       })
       .catch((e) => console.log(e));
   };
 
-  useEffect(() => {
-    if (!users) pullUsers("id", 10);
-  });
-
   const addUser = (e) => {
     e.preventDefault();
     e.target.reset();
-    setUser(
-      id,
-      username,
-      firstName,
-      middleName,
-      lastName,
-      phoneNumber,
-      email,
-      dateEmployed,
-      active,
-      releaseDate
-    );
+
+    // create the object and push it to the db
+    let data = {};
+    data[id] = {
+      id: id,
+      username: username,
+      firstname: firstName,
+      middlename: middleName,
+      lastname: lastName,
+      phonenumber: phoneNumber,
+      email: email,
+      dateemployed: dateEmployed,
+      active: active,
+      releasedate: releaseDate,
+    };
+    setData("user", data);
+
+    // update the state with the new object so we don't have to pull whole db again
+    let temp = users.slice();
+    temp.push(data[id]);
+    setUsers(temp);
   };
 
-  const formatUser = (user) => {
-    return user ? (
-      <span key={user.id}>
-        <p>{user.id}</p>
-        <p>{user.username}</p>
-        <p>{user.firstname}</p>
-        <p>{user.middlename}</p>
-        <p>{user.lastname}</p>
-        <p>{user.email.slice(0, user.email.indexOf("@"))}</p>
-        <p className="action">Edit</p>
-        <p className="action">Delete</p>
-        {/* <p>{user.phonenumber}</p>
+  const formatUser = (usersData) => {
+    return usersData
+      ? usersData.map((user) => (
+          <span key={user.id}>
+            <p>{user.id}</p>
+            <p>{user.username}</p>
+            <p>{user.firstname}</p>
+            <p>{user.middlename}</p>
+            <p>{user.lastname}</p>
+            <p>{user.email.slice(0, user.email.indexOf("@"))}</p>
+            <p className="action">Edit</p>
+            <p
+              className="action"
+              onClick={() => {
+                deleteData(user.id);
+                let temp = users.slice();
+                temp.splice(temp.indexOf(user), 1);
+                setUsers(temp);
+              }}
+            >
+              Delete
+            </p>
+            {/* <p>{user.phonenumber}</p>
         <p>{user.dateemployed}</p>
         <p>{user.active.toString()}</p>
         <p>{user.releasedate}</p> */}
-      </span>
-    ) : (
-      ""
-    );
+          </span>
+        ))
+      : "Loading...";
   };
 
   return (
@@ -173,6 +207,14 @@ export default function User() {
       </form>
       <h1>Users:</h1>
       <div>
+        <label htmlFor="search">Search:</label>
+        <input
+          name="search"
+          type="text"
+          onChange={(e) => searchUser(e.target.value)}
+        ></input>
+      </div>
+      <div>
         <button
           type="button"
           onClick={() => {
@@ -245,7 +287,7 @@ export default function User() {
           <p>Edit</p>
           <p>Delete</p>
         </span>
-        {users ? users.map((u) => formatUser(u)) : "Loading..."}
+        {search ? formatUser(search) : formatUser(users)}
       </div>
     </div>
   );
