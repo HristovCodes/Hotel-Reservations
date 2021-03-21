@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { orderData, setData, deleteData } from "../../firebase";
-import "./styles.scss";
+import "../SharedStyles/styles.scss";
 
 export default function User() {
   const [users, setUsers] = useState();
@@ -83,7 +83,7 @@ export default function User() {
             <p
               className="action"
               onClick={() => {
-                deleteData(user.id);
+                deleteData("user", user.id);
                 let temp = users.slice();
                 temp.splice(temp.indexOf(user), 1);
                 setUsers(temp);
@@ -103,7 +103,7 @@ export default function User() {
   return (
     <div>
       <h2>Add users:</h2>
-      <form className="usersForm" onSubmit={addUser}>
+      <form className="form" onSubmit={addUser}>
         <label htmlFor="id">ЕГН:</label>
         <input
           onChange={(e) => {
@@ -240,9 +240,10 @@ export default function User() {
           50
         </button>
       </div>
-      <div className="usersList">
+      <div className="list">
         <span className="columns">
           <p
+            className="clickable"
             onClick={() => {
               pullUsers("id", 10);
             }}
@@ -250,6 +251,7 @@ export default function User() {
             ID
           </p>
           <p
+            className="clickable"
             onClick={() => {
               pullUsers("username", 10);
             }}
@@ -257,6 +259,7 @@ export default function User() {
             username
           </p>
           <p
+            className="clickable"
             onClick={() => {
               pullUsers("firstname", 10);
             }}
@@ -264,6 +267,7 @@ export default function User() {
             firstName
           </p>
           <p
+            className="clickable"
             onClick={() => {
               pullUsers("middlename", 10);
             }}
@@ -271,6 +275,7 @@ export default function User() {
             middleName
           </p>
           <p
+            className="clickable"
             onClick={() => {
               pullUsers("lastname", 10);
             }}
@@ -278,6 +283,7 @@ export default function User() {
             lastName
           </p>
           <p
+            className="clickable"
             onClick={() => {
               pullUsers("email", 10);
             }}
