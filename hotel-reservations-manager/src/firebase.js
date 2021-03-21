@@ -15,46 +15,22 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-export function setUser(
-  id,
-  username,
-  firstname,
-  middlename,
-  lastname,
-  phonenumber,
-  email,
-  dateemployed,
-  active,
-  releasedate
-) {
-  let data = {};
-  data[email.slice(0, email.indexOf("@"))] = {
-    id: id,
-    username: username,
-    firstname: firstname,
-    middlename: middlename,
-    lastname: lastname,
-    phonenumber: phonenumber,
-    email: email,
-    dateemployed: dateemployed,
-    active: active,
-    releasedate: releasedate,
-  };
-  // to do:
-  // also needs to create a auth object (sign in the user)
-
+export function setData(path, data) {
   firebase
     .database()
-    .ref("user/")
+    .ref(`${path}/`)
     .update(data)
     .catch((e) => console.log(`${e.code}\n${e.message}`));
 }
 
-export async function getUser(query, ammount) {
-  // query can be: "id", "username", "firstname", "middlename", "lastname", "email", ""
+export async function deleteData(path, id) {
+  firebase.database().ref(`${path}/${id}`).remove();
+}
+
+export async function orderData(path, query, ammount) {
   let response = await firebase
     .database()
-    .ref("user/")
+    .ref(`${path}/`)
     .orderByChild(query)
     .limitToFirst(ammount)
     .once("value");
@@ -62,11 +38,11 @@ export async function getUser(query, ammount) {
   if (response.code) {
     throw new Error(response.code);
   } else {
-    const userData = [];
+    const data = [];
     response.forEach((v) => {
-      userData.push(v.val());
+      data.push(v.val());
     });
-    return userData;
+    return data;
   }
 }
 
