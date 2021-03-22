@@ -5,16 +5,6 @@ import "../SharedStyles/styles.scss";
 export default function User() {
   const [users, setUsers] = useState();
   const [search, setSearch] = useState();
-  const [id, setID] = useState("");
-  const [username, setUsername] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [middleName, setMiddleName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [dateEmployed, setDateEmployed] = useState("");
-  const [active, setActive] = useState(false);
-  const [releaseDate, setReleaseDate] = useState(null);
 
   useEffect(() => {
     if (!users) pullUsers("id", 10);
@@ -43,32 +33,6 @@ export default function User() {
       .catch((e) => console.log(e));
   };
 
-  const addUser = (e) => {
-    e.preventDefault();
-    e.target.reset();
-
-    // create the object and push it to the db
-    let data = {};
-    data[id] = {
-      id: id,
-      username: username,
-      firstname: firstName,
-      middlename: middleName,
-      lastname: lastName,
-      phonenumber: phoneNumber,
-      email: email,
-      dateemployed: dateEmployed,
-      active: active,
-      releasedate: releaseDate,
-    };
-    setData("user", data);
-
-    // update the state with the new object so we don't have to pull whole db again
-    let temp = users.slice();
-    temp.push(data[id]);
-    setUsers(temp);
-  };
-
   const formatUser = (usersData) => {
     return usersData
       ? usersData.map((user) => (
@@ -79,7 +43,10 @@ export default function User() {
             <p>{user.middlename}</p>
             <p>{user.lastname}</p>
             <p>{user.email.slice(0, user.email.indexOf("@"))}</p>
-            <p className="action">Edit</p>
+            <p>{user.phonenumber}</p>
+            <p>{user.dateemployed}</p>
+            <p>{user.active.toString()}</p>
+            {user.releasedate ? <p>{user.releasedate}</p> : <p>-</p>}
             <p
               className="action"
               onClick={() => {
@@ -91,10 +58,6 @@ export default function User() {
             >
               Delete
             </p>
-            {/* <p>{user.phonenumber}</p>
-        <p>{user.dateemployed}</p>
-        <p>{user.active.toString()}</p>
-        <p>{user.releasedate}</p> */}
           </span>
         ))
       : "Loading...";
@@ -103,108 +66,7 @@ export default function User() {
   return (
     <div>
       <h2>Add users:</h2>
-      <form className="form" onSubmit={addUser}>
-        <label htmlFor="id">ЕГН:</label>
-        <input
-          onChange={(e) => {
-            setID(e.target.value);
-          }}
-          name="id"
-          type="text"
-        ></input>
-        <label htmlFor="username">Потребителско име:</label>
-        <input
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
-          name="username"
-          type="text"
-        ></input>
-        <label htmlFor="firstName">Име:</label>
-        <input
-          onChange={(e) => {
-            setFirstName(e.target.value);
-          }}
-          name="firstName"
-          type="text"
-        ></input>
-        <label htmlFor="middleName">Бащино име:</label>
-        <input
-          onChange={(e) => {
-            setMiddleName(e.target.value);
-          }}
-          name="middleName"
-          type="text"
-        ></input>
-        <label htmlFor="lastName">Фамилно име:</label>
-        <input
-          onChange={(e) => {
-            setLastName(e.target.value);
-          }}
-          name="lastName"
-          type="text"
-        ></input>
-        <label htmlFor="phoneNumber">Телефон:</label>
-        <input
-          onChange={(e) => {
-            setPhoneNumber(e.target.value);
-          }}
-          name="phoneNumber"
-          type="text"
-        ></input>
-        <label htmlFor="email">Имейл:</label>
-        <input
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-          name="email"
-          type="text"
-        ></input>
-        <label htmlFor="dateEmployed">Дата на назначаване:</label>
-        <input
-          onChange={(e) => {
-            setDateEmployed(e.target.value);
-          }}
-          name="dateEmployed"
-          type="date"
-        ></input>
-        <label htmlFor="active">Статус:</label>
-        <div>
-          <input
-            onChange={(e) => {
-              setActive(true);
-            }}
-            name="active"
-            id="act1"
-            type="radio"
-            value="Активен"
-          ></input>
-          <label htmlFor="act1">Активен</label>
-        </div>
-        <div>
-          <input
-            onChange={(e) => {
-              setActive(false);
-            }}
-            name="active"
-            id="act2"
-            type="radio"
-            value="Уволнен"
-          ></input>
-          <label htmlFor="act2">Не активен</label>
-        </div>
-        <label htmlFor="releaseDate">
-          <span>Пуснат от длъжност на:</span>
-        </label>
-        <input
-          onChange={(e) => {
-            setReleaseDate(e.target.value);
-          }}
-          name="releaseDate"
-          type="date"
-        ></input>
-        <button type="submit">Добави</button>
-      </form>
+      <Form users={users} setUsers={setUsers}></Form>
       <h1>Users:</h1>
       <div>
         <label htmlFor="search">Search:</label>
@@ -290,11 +152,189 @@ export default function User() {
           >
             email
           </p>
-          <p>Edit</p>
+          <p>phoneNumber</p>
+          <p>dateEmployed</p>
+          <p>active</p>
+          <p>dateReleased</p>
           <p>Delete</p>
         </span>
         {search ? formatUser(search) : formatUser(users)}
       </div>
     </div>
+  );
+}
+function Form({ users, setUsers }) {
+  const [open, setOpen] = useState(false);
+  const [id, setID] = useState("");
+  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [dateEmployed, setDateEmployed] = useState("");
+  const [active, setActive] = useState(false);
+  const [releaseDate, setReleaseDate] = useState(null);
+
+  const addUser = (e) => {
+    e.preventDefault();
+    e.target.reset();
+
+    if (
+      id &&
+      username &&
+      firstName &&
+      middleName &&
+      lastName &&
+      phoneNumber &&
+      email &&
+      dateEmployed
+    ) {
+      // create the object and push it to the db
+      let data = {};
+      data[id] = {
+        id: id,
+        username: username,
+        firstname: firstName,
+        middlename: middleName,
+        lastname: lastName,
+        phonenumber: phoneNumber,
+        email: email,
+        dateemployed: dateEmployed,
+        active: active,
+        releasedate: releaseDate,
+      };
+      setData("user", data);
+
+      // update the state with the new object so we don't have to pull whole db again
+      let temp = users.slice();
+      let match = false;
+      temp.forEach((u) => {
+        if (Object.values(u).includes(phoneNumber)) {
+          temp[temp.indexOf(u)] = data[id];
+          setUsers(temp);
+          setOpen(false);
+          match = true;
+        }
+      });
+      if (!match) {
+        temp.push(data[id]);
+        setUsers(temp);
+        setOpen(false);
+      }
+    }
+  };
+
+  return open ? (
+    <form className="form" onSubmit={addUser}>
+      <label htmlFor="id">ЕГН:</label>
+      <input
+        onChange={(e) => {
+          setID(e.target.value);
+        }}
+        name="id"
+        type="text"
+      ></input>
+      <label htmlFor="username">Потребителско име:</label>
+      <input
+        onChange={(e) => {
+          setUsername(e.target.value);
+        }}
+        name="username"
+        type="text"
+      ></input>
+      <label htmlFor="firstName">Име:</label>
+      <input
+        onChange={(e) => {
+          setFirstName(e.target.value);
+        }}
+        name="firstName"
+        type="text"
+      ></input>
+      <label htmlFor="middleName">Бащино име:</label>
+      <input
+        onChange={(e) => {
+          setMiddleName(e.target.value);
+        }}
+        name="middleName"
+        type="text"
+      ></input>
+      <label htmlFor="lastName">Фамилно име:</label>
+      <input
+        onChange={(e) => {
+          setLastName(e.target.value);
+        }}
+        name="lastName"
+        type="text"
+      ></input>
+      <label htmlFor="phoneNumber">Телефон:</label>
+      <input
+        onChange={(e) => {
+          setPhoneNumber(e.target.value);
+        }}
+        name="phoneNumber"
+        type="text"
+      ></input>
+      <label htmlFor="email">Имейл:</label>
+      <input
+        onChange={(e) => {
+          setEmail(e.target.value);
+        }}
+        name="email"
+        type="text"
+      ></input>
+      <label htmlFor="dateEmployed">Дата на назначаване:</label>
+      <input
+        onChange={(e) => {
+          setDateEmployed(e.target.value);
+        }}
+        name="dateEmployed"
+        type="date"
+      ></input>
+      <label htmlFor="active">Статус:</label>
+      <div>
+        <input
+          onChange={(e) => {
+            setActive(true);
+          }}
+          name="active"
+          id="act1"
+          type="radio"
+          value="Активен"
+        ></input>
+        <label htmlFor="act1">Активен</label>
+      </div>
+      <div>
+        <input
+          onChange={(e) => {
+            setActive(false);
+          }}
+          name="active"
+          id="act2"
+          type="radio"
+          value="Уволнен"
+        ></input>
+        <label htmlFor="act2">Не активен</label>
+      </div>
+      <label htmlFor="releaseDate">
+        <span>Пуснат от длъжност на:</span>
+      </label>
+      <input
+        onChange={(e) => {
+          setReleaseDate(e.target.value);
+        }}
+        name="releaseDate"
+        type="date"
+      ></input>
+      <button type="submit">Добави</button>
+    </form>
+  ) : (
+    <button
+      onClick={() => {
+        setOpen(true);
+      }}
+    >
+      Add/Edit user
+    </button>
   );
 }
