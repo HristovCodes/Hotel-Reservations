@@ -46,6 +46,24 @@ export async function orderData(path, query, ammount) {
   }
 }
 
+export async function pullData(path, query) {
+  let response = await firebase
+    .database()
+    .ref(`${path}/`)
+    .orderByChild(query)
+    .once("value");
+
+  if (response.code) {
+    throw new Error(response.code);
+  } else {
+    const data = [];
+    response.forEach((v) => {
+      data.push(v.val());
+    });
+    return data;
+  }
+}
+
 const firebaseInstance = {
   database: firebase.database,
   auth: firebase.auth,
