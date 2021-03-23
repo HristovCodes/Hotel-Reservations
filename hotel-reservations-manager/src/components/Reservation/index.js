@@ -222,7 +222,6 @@ function Form({ reservations, setReservations }) {
         allinclusive: allInclusive,
         price: price.toFixed(2),
       };
-      console.log(data);
       setData("reservation", data);
 
       // update the state with the new object so we don't have to pull whole db again
@@ -233,6 +232,7 @@ function Form({ reservations, setReservations }) {
           temp[temp.indexOf(u)] = data[`${dateAccommodation} | ${roomNum}`];
           setReservations(temp);
           setOpen(false);
+          setOccupants([]);
           match = true;
         }
       });
@@ -240,6 +240,7 @@ function Form({ reservations, setReservations }) {
         temp.push(data[`${dateAccommodation} | ${roomNum}`]);
         setReservations(temp);
         setOpen(false);
+        setOccupants([]);
       }
     }
   };
