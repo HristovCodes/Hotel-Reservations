@@ -33,9 +33,9 @@ export default function Room() {
       .catch((e) => console.log(e));
   };
 
-  const formatRoom = (clientsData) => {
-    return clientsData
-      ? clientsData.map((room) => (
+  const formatRoom = (roomsData) => {
+    return roomsData
+      ? roomsData.map((room) => (
           <span key={room.number}>
             <p>{room.capacity}</p>
             <p>{room.type}</p>
