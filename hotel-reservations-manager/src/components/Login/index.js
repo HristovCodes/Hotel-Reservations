@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import firebase from "../../firebase.js";
+import "./styles.scss";
+import logo from "./logo.png";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -27,30 +29,29 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <h1>Hotel Reservations</h1>
-      <h2>Моля влезте във вашият акаунт</h2>
-      <form onSubmit={loginUser}>
-        <input
-          onChange={(e) => setEmail(e.target.value)}
-          required={true}
-          type="email"
-          placeholder="examplemail@provider.com"
-        ></input>
-        <input
-          onChange={(e) => setPassword(e.target.value)}
-          required={true}
-          placeholder="password"
-          type="password"
-        ></input>
+    <div className="background">
+      <form className="loginform" onSubmit={loginUser}>
+        <h1>HOTEL RESERVATIONS</h1>
         <div>
-          <button type="button">
-            <img></img>
-          </button>
-          <p>Запомни ме</p>
+          <h2>Моля влезте във вашият акаунт</h2>
+          <input
+            onChange={(e) => setEmail(e.target.value)}
+            required={true}
+            type="email"
+            placeholder="examplemail@provider.com"
+          ></input>
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            required={true}
+            type="password"
+            placeholder="password"
+          ></input>
+          <button type="submit">Вход</button>
         </div>
-        <button type="submit">Вход</button>
       </form>
+      <div className="logo">
+        <img src={logo} alt=""></img>
+      </div>
     </div>
   );
 }
