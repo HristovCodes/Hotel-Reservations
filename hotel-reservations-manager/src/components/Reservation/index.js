@@ -213,6 +213,7 @@ function Form({ reservations, setReservations }) {
         roomnum: roomNum,
         usercreated: userCreated,
         occupants: occupants.reduce(
+          //eslint-disable-next-line
           (obj, item) => ((obj[item.phonenumber] = item), obj),
           {}
         ),
