@@ -75,7 +75,7 @@ export default function Reservation() {
   };
 
   return (
-    <div>
+    <div className="dbview">
       <h2>Add reservations:</h2>
       <Form
         reservations={reservations}

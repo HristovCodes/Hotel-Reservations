@@ -64,7 +64,7 @@ export default function User() {
   };
 
   return (
-    <div>
+    <div className="dbview">
       <h2>Add users:</h2>
       <Form users={users} setUsers={setUsers}></Form>
       <h1>Users:</h1>

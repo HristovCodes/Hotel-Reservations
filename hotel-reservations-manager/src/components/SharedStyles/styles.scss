@@ -28,6 +28,22 @@
   }
 }
 
+.dbview {
+  h2,
+  h1 {
+    margin: 0;
+  }
+
+  button.count {
+    padding: 7px 0;
+    width: 40px;
+    margin: 0 5px;
+  }
+  button.addedit {
+    width: 120px;
+  }
+}
+
 .form {
   display: flex;
   flex-direction: column;

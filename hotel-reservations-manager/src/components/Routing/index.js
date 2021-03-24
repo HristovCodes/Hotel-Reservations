@@ -32,7 +32,7 @@ export default function Routing() {
 
   return user ? (
     <Router>
-      <div className="main">
+      <div className="routing">
         <Switch>
           <Route exact path="/">
             <Redirect to="/Hotel-Reservations/"></Redirect>

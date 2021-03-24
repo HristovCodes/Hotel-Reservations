@@ -60,7 +60,7 @@ export default function Room() {
   };
 
   return (
-    <div>
+    <div className="dbview">
       <h2>Add rooms:</h2>
       <Form rooms={rooms} setRooms={setRooms}></Form>
       <h1>Rooms:</h1>

@@ -29,7 +29,7 @@ export default function Login() {
   };
 
   return (
-    <div className="background">
+    <div className="login">
       <form className="loginform" onSubmit={loginUser}>
         <h1>HOTEL RESERVATIONS</h1>
         <div>
@@ -46,7 +46,9 @@ export default function Login() {
             type="password"
             placeholder="password"
           ></input>
-          <button type="submit">Вход</button>
+          <button className="btn" type="submit">
+            Вход
+          </button>
         </div>
       </form>
       <div className="logo">

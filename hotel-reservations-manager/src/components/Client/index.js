@@ -59,7 +59,7 @@ export default function Client() {
   };
 
   return (
-    <div>
+    <div className="dbview">
       <h2>Add clients:</h2>
       <Form clients={clients} setClients={setClients}></Form>
       <h1>Clients:</h1>
@@ -73,6 +73,7 @@ export default function Client() {
       </div>
       <div>
         <button
+          className="btn count"
           type="button"
           onClick={() => {
             pullClients("id", 10);
@@ -81,6 +82,7 @@ export default function Client() {
           10
         </button>
         <button
+          className="btn count"
           type="button"
           onClick={() => {
             pullClients("id", 25);
@@ -89,6 +91,7 @@ export default function Client() {
           25
         </button>
         <button
+          className="btn count"
           type="button"
           onClick={() => {
             pullClients("id", 50);
@@ -227,10 +230,13 @@ function Form({ clients, setClients }) {
         ></input>
         <label htmlFor="act2">Дете</label>
       </div>
-      <button type="submit">Добави</button>
+      <button className="btn" type="submit">
+        Добави
+      </button>
     </form>
   ) : (
     <button
+      className="btn addedit"
       onClick={() => {
         setOpen(true);
       }}
