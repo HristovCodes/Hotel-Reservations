@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/Hotel-Reservations/static/css/main.ba978071.chunk.css",
+    "main.js": "/Hotel-Reservations/static/js/main.6a67b0e1.chunk.js",
+    "main.js.map": "/Hotel-Reservations/static/js/main.6a67b0e1.chunk.js.map",
+    "runtime-main.js": "/Hotel-Reservations/static/js/runtime-main.21a4d78c.js",
+    "runtime-main.js.map": "/Hotel-Reservations/static/js/runtime-main.21a4d78c.js.map",
+    "static/css/2.679831fc.chunk.css": "/Hotel-Reservations/static/css/2.679831fc.chunk.css",
+    "static/js/2.ba4cf21d.chunk.js": "/Hotel-Reservations/static/js/2.ba4cf21d.chunk.js",
+    "static/js/2.ba4cf21d.chunk.js.map": "/Hotel-Reservations/static/js/2.ba4cf21d.chunk.js.map",
+    "static/js/3.99713bda.chunk.js": "/Hotel-Reservations/static/js/3.99713bda.chunk.js",
+    "static/js/3.99713bda.chunk.js.map": "/Hotel-Reservations/static/js/3.99713bda.chunk.js.map",
+    "index.html": "/Hotel-Reservations/index.html",
+    "static/css/2.679831fc.chunk.css.map": "/Hotel-Reservations/static/css/2.679831fc.chunk.css.map",
+    "static/css/main.ba978071.chunk.css.map": "/Hotel-Reservations/static/css/main.ba978071.chunk.css.map",
+    "static/js/2.ba4cf21d.chunk.js.LICENSE.txt": "/Hotel-Reservations/static/js/2.ba4cf21d.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.21a4d78c.js",
+    "static/css/2.679831fc.chunk.css",
+    "static/js/2.ba4cf21d.chunk.js",
+    "static/css/main.ba978071.chunk.css",
+    "static/js/main.6a67b0e1.chunk.js"
+  ]
+}
