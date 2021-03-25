@@ -35,12 +35,14 @@ export default function Login() {
         <div>
           <h2>Моля влезте във вашият акаунт</h2>
           <input
+            className="inp"
             onChange={(e) => setEmail(e.target.value)}
             required={true}
             type="email"
             placeholder="examplemail@provider.com"
           ></input>
           <input
+            className="inp"
             onChange={(e) => setPassword(e.target.value)}
             required={true}
             type="password"
