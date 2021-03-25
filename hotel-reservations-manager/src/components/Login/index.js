@@ -29,24 +29,28 @@ export default function Login() {
   };
 
   return (
-    <div className="background">
+    <div className="login">
       <form className="loginform" onSubmit={loginUser}>
         <h1>HOTEL RESERVATIONS</h1>
         <div>
           <h2>Моля влезте във вашият акаунт</h2>
           <input
+            className="inp"
             onChange={(e) => setEmail(e.target.value)}
             required={true}
             type="email"
             placeholder="examplemail@provider.com"
           ></input>
           <input
+            className="inp"
             onChange={(e) => setPassword(e.target.value)}
             required={true}
             type="password"
             placeholder="password"
           ></input>
-          <button type="submit">Вход</button>
+          <button className="btn" type="submit">
+            Вход
+          </button>
         </div>
       </form>
       <div className="logo">

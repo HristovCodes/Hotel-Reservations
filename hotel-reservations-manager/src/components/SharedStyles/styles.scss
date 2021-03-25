@@ -1,42 +1,108 @@
-.list {
-  display: flex;
-  flex-direction: column;
-  .columns {
-    font-weight: 600;
-    .clickable {
-      cursor: pointer;
+.dbview {
+  .list {
+    display: flex;
+    flex-direction: column;
+    .columns {
+      background-color: lighten($color: #121212, $amount: 3);
+      font-weight: 600;
+      .clickable {
+        cursor: pointer;
+      }
+    }
+    .datarow:nth-child(even) {
+      background-color: darken($color: #121212, $amount: 5);
+    }
+    span {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+
+      .action {
+        font-weight: 600;
+        color: rgb(40, 233, 169);
+        cursor: pointer;
+      }
+
+      p {
+        padding: 5px 0;
+        margin: 10px 0;
+        width: 150px;
+        text-align: center;
+      }
     }
   }
-  span {
+
+  .buttons {
+    margin: 4px 0;
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
     justify-content: space-between;
+    align-items: center;
+  }
 
-    .action {
-      font-weight: 600;
-      color: rgb(40, 233, 169);
-      cursor: pointer;
-    }
+  h2,
+  h1 {
+    margin: 0;
+  }
 
-    p {
-      padding: 5px 0;
-      margin: 10px 0;
-      width: 150px;
-      text-align: center;
-    }
+  button.count {
+    width: 40px;
+    margin: 0 5px;
+  }
+  button.addedit {
+    width: 120px;
   }
 }
 
-.form {
+.splitform {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 400px;
+  .partone,
+  .parttwo {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+  }
+}
+
+.normalform {
   display: flex;
   flex-direction: column;
   width: 200px;
-  label {
+}
+
+.form {
+  background-color: lighten($color: #121212, $amount: 3);
+  padding: 20px 20px;
+  border: lighten($color: #121212, $amount: 15) 1px solid;
+  border-radius: 3px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  .occupantlist {
+    margin: 5px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  label.lbl {
+    margin: 5px 0;
     font-weight: 600;
   }
   input {
+    margin: 5px 0;
   }
-  button {
+  input[type="radio"] {
+    margin-right: 5px;
+  }
+  .formbtn {
+    margin: 5px 0;
+    align-self: flex-end;
   }
 }

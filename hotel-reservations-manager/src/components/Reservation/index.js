@@ -41,7 +41,10 @@ export default function Reservation() {
   const formatReservation = (reservationsData) => {
     return reservationsData
       ? reservationsData.map((reservation) => (
-          <span key={`${reservation.dateaccommodation}${reservation.roomnum}`}>
+          <span
+            class="datarow"
+            key={`${reservation.dateaccommodation}${reservation.roomnum}`}
+          >
             <p>{reservation.roomnum}</p>
             <p>{reservation.usercreated.id}</p>
             <p>{reservation.price}</p>
@@ -75,46 +78,53 @@ export default function Reservation() {
   };
 
   return (
-    <div>
-      <h2>Add reservations:</h2>
-      <Form
-        reservations={reservations}
-        setReservations={setReservations}
-      ></Form>
+    <div className="dbview">
       <h1>Reservations:</h1>
-      <div>
-        <label htmlFor="search">Search:</label>
-        <input
-          name="search"
-          type="text"
-          onChange={(e) => searchReservation(e.target.value)}
-        ></input>
-      </div>
-      <div>
-        <button
-          type="button"
-          onClick={() => {
-            pullReservations("roomnum", 10);
-          }}
-        >
-          10
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            pullReservations("roomnum", 25);
-          }}
-        >
-          25
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            pullReservations("roomnum", 50);
-          }}
-        >
-          50
-        </button>
+      <div className="buttons">
+        <div>
+          <label className="lbl" htmlFor="search">
+            Search:
+          </label>
+          <input
+            className="inp"
+            name="search"
+            type="text"
+            onChange={(e) => searchReservation(e.target.value)}
+          ></input>
+        </div>
+        <Form
+          reservations={reservations}
+          setReservations={setReservations}
+        ></Form>
+        <div>
+          <button
+            className="btn count"
+            type="button"
+            onClick={() => {
+              pullReservations("roomnum", 10);
+            }}
+          >
+            10
+          </button>
+          <button
+            className="btn count"
+            type="button"
+            onClick={() => {
+              pullReservations("roomnum", 25);
+            }}
+          >
+            25
+          </button>
+          <button
+            className="btn count"
+            type="button"
+            onClick={() => {
+              pullReservations("roomnum", 50);
+            }}
+          >
+            50
+          </button>
+        </div>
       </div>
       <div className="list">
         <span className="columns">
@@ -177,17 +187,18 @@ function Form({ reservations, setReservations }) {
   const addReservation = (e) => {
     e.preventDefault();
     e.target.reset();
+    let datediff = Math.floor(
+      (Date.parse(dateRelease) - Date.parse(dateAccommodation)) / 86400000
+    );
 
     if (
       roomNum &&
       userCreated &&
       occupants &&
       dateAccommodation &&
-      dateRelease
+      dateRelease &&
+      datediff <= 0
     ) {
-      let datediff = Math.floor(
-        (Date.parse(dateRelease) - Date.parse(dateAccommodation)) / 86400000
-      );
       let price = 0;
       rooms.forEach((r) => {
         if (r.number === roomNum) {
@@ -246,133 +257,173 @@ function Form({ reservations, setReservations }) {
     }
   };
 
-  return open ? (
-    <form className="form" onSubmit={addReservation}>
-      <label htmlFor="roomnum">Номер на стаята:</label>
-      <input
-        onChange={(e) => {
-          setRoomNum(e.target.value);
-        }}
-        name="roomnum"
-        type="text"
-      ></input>
-      <label htmlFor="occupants">
-        Списък с настанени клиенти: *търсенето става по първо или фамилно име*
-      </label>
-      <input
-        onChange={(e) => {
-          setSearchOccupant(e.target.value);
-        }}
-        name="occupants"
-        type="search"
-      ></input>
-      <button
-        onClick={() => {
-          let temp = clients.slice();
-          temp.forEach((c) => {
-            // check if the client exists and if we have already added it
-            if (
-              Object.values(c).includes(searchOccupant) &&
-              !occupants.includes(c)
-            ) {
-              let temp = occupants.slice();
-              temp.push(c);
-              setOccupants(temp);
-            }
-          });
-        }}
-        type="button"
-      >
-        Добави
-      </button>
-      {occupants.map((e) => {
-        return (
-          <div key={e.phonenumber}>
-            <p>{`${e.firstname} ${e.lastname}`}</p>
+  return (
+    <div>
+      {open ? (
+        <form className="form splitform" onSubmit={addReservation}>
+          <div className="partone">
+            <label className="lbl" htmlFor="roomnum">
+              Номер на стаята:
+            </label>
+            <input
+              className="inp"
+              onChange={(e) => {
+                setRoomNum(e.target.value);
+              }}
+              name="roomnum"
+              type="text"
+            ></input>
+            <label className="lbl" htmlFor="occupants">
+              Списък с настанени клиенти:
+            </label>
+            <input
+              className="inp"
+              onChange={(e) => {
+                setSearchOccupant(e.target.value);
+              }}
+              name="occupants"
+              type="search"
+            ></input>
             <button
+              className="btn formbtn"
               onClick={() => {
-                let temp = occupants.slice();
-                temp.splice(temp.indexOf(e), 1);
-                setOccupants(temp);
+                let temp = clients.slice();
+                temp.forEach((c) => {
+                  // check if the client exists and if we have already added it
+                  if (
+                    Object.values(c).includes(searchOccupant) &&
+                    !occupants.includes(c)
+                  ) {
+                    let temp = occupants.slice();
+                    temp.push(c);
+                    setOccupants(temp);
+                  }
+                });
               }}
               type="button"
             >
-              премахни от списъка
+              Добави
+            </button>
+            {occupants.map((e) => {
+              return (
+                <div className="occupantlist" key={e.phonenumber}>
+                  <p>{`${e.firstname} ${e.lastname}`}</p>
+                  <button
+                    className="remove"
+                    onClick={() => {
+                      let temp = occupants.slice();
+                      temp.splice(temp.indexOf(e), 1);
+                      setOccupants(temp);
+                    }}
+                    type="button"
+                  >
+                    X
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          <div className="parttwo">
+            <label className="lbl" htmlFor="dateaccomodation">
+              Дата на настаняване:
+            </label>
+            <input
+              className="inp"
+              onChange={(e) => {
+                setDateAccomodation(e.target.value);
+              }}
+              name="dateaccomodation"
+              type="date"
+            ></input>
+            <label className="lbl" htmlFor="daterelease">
+              Дата на освобождаване:
+            </label>
+            <input
+              className="inp"
+              onChange={(e) => {
+                setDateRelease(e.target.value);
+              }}
+              name="daterelease"
+              type="date"
+            ></input>
+            <label className="lbl" htmlFor="breakfast">
+              Включена закуска:
+            </label>
+            <div>
+              <input
+                className="inp"
+                onChange={(e) => {
+                  setBreakfast(true);
+                }}
+                name="breakfast"
+                id="brkf1"
+                type="radio"
+              ></input>
+              <label className="lbl" htmlFor="brkf1">
+                Да
+              </label>
+            </div>
+            <div>
+              <input
+                className="inp"
+                onChange={(e) => {
+                  setBreakfast(false);
+                }}
+                name="breakfast"
+                id="brkf2"
+                type="radio"
+              ></input>
+              <label className="lbl" htmlFor="brkf2">
+                Не
+              </label>
+            </div>
+            <label className="lbl" htmlFor="allinclusive">
+              Включен allinclusive:
+            </label>
+            <div>
+              <input
+                className="inp"
+                onChange={(e) => {
+                  setAllInclusive(true);
+                }}
+                name="allinclusive"
+                id="alli1"
+                type="radio"
+              ></input>
+              <label className="lbl" htmlFor="alli1">
+                Да
+              </label>
+            </div>
+            <div>
+              <input
+                className="inp"
+                onChange={(e) => {
+                  setAllInclusive(false);
+                }}
+                name="allinclusive"
+                id="alli2"
+                type="radio"
+              ></input>
+              <label className="lbl" htmlFor="alli2">
+                Не
+              </label>
+            </div>
+            <button className="btn formbtn" type="submit">
+              Добави
             </button>
           </div>
-        );
-      })}
-      <label htmlFor="dateaccomodation">Дата на настаняване:</label>
-      <input
-        onChange={(e) => {
-          setDateAccomodation(e.target.value);
+        </form>
+      ) : (
+        ""
+      )}
+      <button
+        className="btn addedit"
+        onClick={() => {
+          setOpen(!open);
         }}
-        name="dateaccomodation"
-        type="date"
-      ></input>
-      <label htmlFor="daterelease">Дата на освобождаване:</label>
-      <input
-        onChange={(e) => {
-          setDateRelease(e.target.value);
-        }}
-        name="daterelease"
-        type="date"
-      ></input>
-      <label htmlFor="breakfast">Включена закуска:</label>
-      <div>
-        <input
-          onChange={(e) => {
-            setBreakfast(true);
-          }}
-          name="breakfast"
-          id="brkf1"
-          type="radio"
-        ></input>
-        <label htmlFor="brkf1">Да</label>
-      </div>
-      <div>
-        <input
-          onChange={(e) => {
-            setBreakfast(false);
-          }}
-          name="breakfast"
-          id="brkf2"
-          type="radio"
-        ></input>
-        <label htmlFor="brkf2">Не</label>
-      </div>
-      <label htmlFor="allinclusive">Включен allinclusive:</label>
-      <div>
-        <input
-          onChange={(e) => {
-            setAllInclusive(true);
-          }}
-          name="allinclusive"
-          id="alli1"
-          type="radio"
-        ></input>
-        <label htmlFor="alli1">Да</label>
-      </div>
-      <div>
-        <input
-          onChange={(e) => {
-            setAllInclusive(false);
-          }}
-          name="allinclusive"
-          id="alli2"
-          type="radio"
-        ></input>
-        <label htmlFor="alli2">Не</label>
-      </div>
-      <button type="submit">Добави</button>
-    </form>
-  ) : (
-    <button
-      onClick={() => {
-        setOpen(true);
-      }}
-    >
-      Add/Edit reservation
-    </button>
+      >
+        {open ? "Close form" : "Add/Edit reservation"}
+      </button>
+    </div>
   );
 }
