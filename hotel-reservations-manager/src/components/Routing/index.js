@@ -30,7 +30,7 @@ export default function Routing() {
     });
   });
 
-  return user ? (
+  return (
     <Router>
       <div className="routing">
         <Switch>
@@ -61,19 +61,19 @@ export default function Routing() {
         </Switch>
       </div>
     </Router>
-  ) : (
-    <div>Loading...</div>
   );
 }
 
 function PrivateRoute({ user, children, ...rest }) {
-  return (
-    <Route {...rest}>
-      {user !== "anon" && user ? (
-        children
-      ) : (
-        <Redirect to={"/Hotel-Reservations/Login"}></Redirect>
-      )}
-    </Route>
-  );
+  if (user)
+    return (
+      <Route {...rest}>
+        {user !== "anon" && user ? (
+          children
+        ) : (
+          <Redirect to={"/Hotel-Reservations/Login"}></Redirect>
+        )}
+      </Route>
+    );
+  return null;
 }

@@ -49,42 +49,44 @@ export default function Reservation() {
   };
 
   const formatReservation = (reservationsData) => {
-    return reservationsData
-      ? reservationsData.map((reservation) => (
-          <span
-            class="datarow"
-            key={`${reservation.dateaccommodation}${reservation.roomnum}`}
+    return reservationsData ? (
+      reservationsData.map((reservation) => (
+        <span
+          className="datarow"
+          key={`${reservation.dateaccommodation}${reservation.roomnum}`}
+        >
+          <p>{reservation.roomnum}</p>
+          <p>{reservation.usercreated.id}</p>
+          <p>{reservation.price}</p>
+          <div>
+            {Object.values(reservation.occupants).map((o) => {
+              // add an on click that shows reservations for this user here or in users not sure
+              return <p>{`${o.firstname} ${o.lastname}`}</p>;
+            })}
+          </div>
+          <p>{reservation.dateaccommodation}</p>
+          <p>{reservation.daterelease}</p>
+          <p>{reservation.breakfast.toString()}</p>
+          <p>{reservation.allinclusive.toString()}</p>
+          <p
+            className="action"
+            onClick={() => {
+              deleteData(
+                "reservation",
+                `${reservation.dateaccommodation} | ${reservation.roomnum}`
+              );
+              let temp = reservations.slice();
+              temp.splice(temp.indexOf(reservation), 1);
+              setReservations(temp);
+            }}
           >
-            <p>{reservation.roomnum}</p>
-            <p>{reservation.usercreated.id}</p>
-            <p>{reservation.price}</p>
-            <div>
-              {Object.values(reservation.occupants).map((o) => {
-                // add an on click that shows reservations for this user here or in users not sure
-                return <p>{`${o.firstname} ${o.lastname}`}</p>;
-              })}
-            </div>
-            <p>{reservation.dateaccommodation}</p>
-            <p>{reservation.daterelease}</p>
-            <p>{reservation.breakfast.toString()}</p>
-            <p>{reservation.allinclusive.toString()}</p>
-            <p
-              className="action"
-              onClick={() => {
-                deleteData(
-                  "reservation",
-                  `${reservation.dateaccommodation} | ${reservation.roomnum}`
-                );
-                let temp = reservations.slice();
-                temp.splice(temp.indexOf(reservation), 1);
-                setReservations(temp);
-              }}
-            >
-              Delete
-            </p>
-          </span>
-        ))
-      : "Loading...";
+            Delete
+          </p>
+        </span>
+      ))
+    ) : (
+      <span className="datarow"></span>
+    );
   };
 
   return (

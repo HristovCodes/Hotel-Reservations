@@ -34,29 +34,31 @@ export default function Room() {
   };
 
   const formatRoom = (roomsData) => {
-    return roomsData
-      ? roomsData.map((room) => (
-          <span class="datarow" key={room.number}>
-            <p>{room.capacity}</p>
-            <p>{room.type}</p>
-            <p>{room.occupied.toString()}</p>
-            <p>{room.adult}</p>
-            <p>{room.kid}</p>
-            <p>{room.number}</p>
-            <p
-              className="action"
-              onClick={() => {
-                deleteData("room", room.number);
-                let temp = rooms.slice();
-                temp.splice(temp.indexOf(room), 1);
-                setRooms(temp);
-              }}
-            >
-              Delete
-            </p>
-          </span>
-        ))
-      : "Loading...";
+    return roomsData ? (
+      roomsData.map((room) => (
+        <span class="datarow" key={room.number}>
+          <p>{room.capacity}</p>
+          <p>{room.type}</p>
+          <p>{room.occupied.toString()}</p>
+          <p>{room.adult}</p>
+          <p>{room.kid}</p>
+          <p>{room.number}</p>
+          <p
+            className="action"
+            onClick={() => {
+              deleteData("room", room.number);
+              let temp = rooms.slice();
+              temp.splice(temp.indexOf(room), 1);
+              setRooms(temp);
+            }}
+          >
+            Delete
+          </p>
+        </span>
+      ))
+    ) : (
+      <span className="datarow"></span>
+    );
   };
 
   return (
