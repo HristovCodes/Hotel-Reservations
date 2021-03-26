@@ -21,8 +21,18 @@ export default function Reservation() {
     temp.forEach((u) => {
       if (Object.values(u).includes(query)) {
         matches.push(u);
+      } else if (Object.values(u.usercreated).includes(query)) {
+        matches.push(u);
+      } else {
+        Object.values(u.occupants).forEach((o) => {
+          if (Object.values(o).includes(query)) {
+            matches.push(u);
+            console.log(matches);
+          }
+        });
       }
     });
+    console.log(matches);
     if (matches.length > 0) {
       return setSearch(matches);
     }
@@ -197,7 +207,7 @@ function Form({ reservations, setReservations }) {
       occupants &&
       dateAccommodation &&
       dateRelease &&
-      datediff <= 0
+      datediff > 0
     ) {
       let price = 0;
       rooms.forEach((r) => {
