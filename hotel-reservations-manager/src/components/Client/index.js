@@ -34,28 +34,30 @@ export default function Client() {
   };
 
   const formatClient = (clientsData) => {
-    return clientsData
-      ? clientsData.map((client) => (
-          <span class="datarow" key={client.phonenumber}>
-            <p>{client.firstname}</p>
-            <p>{client.lastname}</p>
-            <p>{client.phonenumber}</p>
-            <p>{client.adult.toString()}</p>
-            <p>{client.email.slice(0, client.email.indexOf("@"))}</p>
-            <p
-              className="action"
-              onClick={() => {
-                deleteData("client", client.phonenumber);
-                let temp = clients.slice();
-                temp.splice(temp.indexOf(client), 1);
-                setClients(temp);
-              }}
-            >
-              Delete
-            </p>
-          </span>
-        ))
-      : "Loading...";
+    return clientsData ? (
+      clientsData.map((client) => (
+        <span class="datarow" key={client.phonenumber}>
+          <p>{client.firstname}</p>
+          <p>{client.lastname}</p>
+          <p>{client.phonenumber}</p>
+          <p>{client.adult.toString()}</p>
+          <p>{client.email.slice(0, client.email.indexOf("@"))}</p>
+          <p
+            className="action"
+            onClick={() => {
+              deleteData("client", client.phonenumber);
+              let temp = clients.slice();
+              temp.splice(temp.indexOf(client), 1);
+              setClients(temp);
+            }}
+          >
+            Delete
+          </p>
+        </span>
+      ))
+    ) : (
+      <span className="datarow"></span>
+    );
   };
 
   return (

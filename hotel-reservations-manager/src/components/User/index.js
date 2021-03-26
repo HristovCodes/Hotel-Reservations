@@ -34,33 +34,35 @@ export default function User() {
   };
 
   const formatUser = (usersData) => {
-    return usersData
-      ? usersData.map((user) => (
-          <span class="datarow" key={user.id}>
-            <p>{user.id}</p>
-            <p>{user.username}</p>
-            <p>{user.firstname}</p>
-            <p>{user.middlename}</p>
-            <p>{user.lastname}</p>
-            <p>{user.email.slice(0, user.email.indexOf("@"))}</p>
-            <p>{user.phonenumber}</p>
-            <p>{user.dateemployed}</p>
-            <p>{user.active.toString()}</p>
-            {user.releasedate ? <p>{user.releasedate}</p> : <p>-</p>}
-            <p
-              className="action"
-              onClick={() => {
-                deleteData("user", user.id);
-                let temp = users.slice();
-                temp.splice(temp.indexOf(user), 1);
-                setUsers(temp);
-              }}
-            >
-              Delete
-            </p>
-          </span>
-        ))
-      : "Loading...";
+    return usersData ? (
+      usersData.map((user) => (
+        <span class="datarow" key={user.id}>
+          <p>{user.id}</p>
+          <p>{user.username}</p>
+          <p>{user.firstname}</p>
+          <p>{user.middlename}</p>
+          <p>{user.lastname}</p>
+          <p>{user.email.slice(0, user.email.indexOf("@"))}</p>
+          <p>{user.phonenumber}</p>
+          <p>{user.dateemployed}</p>
+          <p>{user.active.toString()}</p>
+          {user.releasedate ? <p>{user.releasedate}</p> : <p>-</p>}
+          <p
+            className="action"
+            onClick={() => {
+              deleteData("user", user.id);
+              let temp = users.slice();
+              temp.splice(temp.indexOf(user), 1);
+              setUsers(temp);
+            }}
+          >
+            Delete
+          </p>
+        </span>
+      ))
+    ) : (
+      <span className="datarow"></span>
+    );
   };
 
   return (
