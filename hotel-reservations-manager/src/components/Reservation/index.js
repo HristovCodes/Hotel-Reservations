@@ -4,6 +4,7 @@ import firebaseInstance, {
   setData,
   deleteData,
   pullData,
+  pullUserData,
 } from "../../firebase";
 import "../SharedStyles/styles.scss";
 
@@ -172,9 +173,13 @@ function Form({ reservations, setReservations }) {
 
   useEffect(() => {
     if (!users) {
-      pullData("user", "id").then((data) => {
-        setUsers(data);
-      });
+      pullUserData(firebaseInstance.auth().currentUser.uid)
+        // non admins can't pull users that and get their own object think of a solution later
+        .then((data) => {
+          console.log(data);
+          setUsers(data);
+        })
+        .catch((e) => console.log(e.message));
     }
     if (!userCreated && users) {
       let temp = users.slice();
@@ -247,6 +252,7 @@ function Form({ reservations, setReservations }) {
         price: price.toFixed(2),
       };
       setData("reservation", data);
+      setData(`room/${data.roomNum}`, { occupied: true });
 
       // update the state with the new object so we don't have to pull whole db again
       let temp = reservations.slice();
@@ -271,163 +277,162 @@ function Form({ reservations, setReservations }) {
 
   return (
     <div>
-      {open ? (
-        <form className="form splitform" onSubmit={addReservation}>
-          <div className="partone">
-            <label className="lbl" htmlFor="roomnum">
-              Номер на стаята:
-            </label>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setRoomNum(e.target.value);
-              }}
-              name="roomnum"
-              type="text"
-            ></input>
-            <label className="lbl" htmlFor="occupants">
-              Списък с настанени клиенти:
-            </label>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setSearchOccupant(e.target.value);
-              }}
-              name="occupants"
-              type="search"
-            ></input>
-            <button
-              className="btn formbtn"
-              onClick={() => {
-                let temp = clients.slice();
-                temp.forEach((c) => {
-                  // check if the client exists and if we have already added it
-                  if (
-                    Object.values(c).includes(searchOccupant) &&
-                    !occupants.includes(c)
-                  ) {
+      <form
+        className={open ? "form splitform" : "closed"}
+        onSubmit={addReservation}
+      >
+        <div className="partone">
+          <label className="lbl" htmlFor="roomnum">
+            Номер на стаята:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setRoomNum(e.target.value);
+            }}
+            name="roomnum"
+            type="text"
+          ></input>
+          <label className="lbl" htmlFor="occupants">
+            Списък с настанени клиенти:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setSearchOccupant(e.target.value);
+            }}
+            name="occupants"
+            type="search"
+          ></input>
+          <button
+            className="btn formbtn"
+            onClick={() => {
+              let temp = clients.slice();
+              temp.forEach((c) => {
+                // check if the client exists and if we have already added it
+                if (
+                  Object.values(c).includes(searchOccupant) &&
+                  !occupants.includes(c)
+                ) {
+                  let temp = occupants.slice();
+                  temp.push(c);
+                  setOccupants(temp);
+                }
+              });
+            }}
+            type="button"
+          >
+            Добави
+          </button>
+          {occupants.map((e) => {
+            return (
+              <div className="occupantlist" key={e.phonenumber}>
+                <p>{`${e.firstname} ${e.lastname}`}</p>
+                <button
+                  className="remove"
+                  onClick={() => {
                     let temp = occupants.slice();
-                    temp.push(c);
+                    temp.splice(temp.indexOf(e), 1);
                     setOccupants(temp);
-                  }
-                });
-              }}
-              type="button"
-            >
-              Добави
-            </button>
-            {occupants.map((e) => {
-              return (
-                <div className="occupantlist" key={e.phonenumber}>
-                  <p>{`${e.firstname} ${e.lastname}`}</p>
-                  <button
-                    className="remove"
-                    onClick={() => {
-                      let temp = occupants.slice();
-                      temp.splice(temp.indexOf(e), 1);
-                      setOccupants(temp);
-                    }}
-                    type="button"
-                  >
-                    X
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-          <div className="parttwo">
-            <label className="lbl" htmlFor="dateaccomodation">
-              Дата на настаняване:
-            </label>
+                  }}
+                  type="button"
+                >
+                  X
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        <div className="parttwo">
+          <label className="lbl" htmlFor="dateaccomodation">
+            Дата на настаняване:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setDateAccomodation(e.target.value);
+            }}
+            name="dateaccomodation"
+            type="date"
+          ></input>
+          <label className="lbl" htmlFor="daterelease">
+            Дата на освобождаване:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setDateRelease(e.target.value);
+            }}
+            name="daterelease"
+            type="date"
+          ></input>
+          <label className="lbl" htmlFor="breakfast">
+            Включена закуска:
+          </label>
+          <div>
             <input
               className="inp"
               onChange={(e) => {
-                setDateAccomodation(e.target.value);
+                setBreakfast(true);
               }}
-              name="dateaccomodation"
-              type="date"
+              name="breakfast"
+              id="brkf1"
+              type="radio"
             ></input>
-            <label className="lbl" htmlFor="daterelease">
-              Дата на освобождаване:
+            <label className="lbl" htmlFor="brkf1">
+              Да
             </label>
+          </div>
+          <div>
             <input
               className="inp"
               onChange={(e) => {
-                setDateRelease(e.target.value);
+                setBreakfast(false);
               }}
-              name="daterelease"
-              type="date"
+              name="breakfast"
+              id="brkf2"
+              type="radio"
             ></input>
-            <label className="lbl" htmlFor="breakfast">
-              Включена закуска:
+            <label className="lbl" htmlFor="brkf2">
+              Не
             </label>
-            <div>
-              <input
-                className="inp"
-                onChange={(e) => {
-                  setBreakfast(true);
-                }}
-                name="breakfast"
-                id="brkf1"
-                type="radio"
-              ></input>
-              <label className="lbl" htmlFor="brkf1">
-                Да
-              </label>
-            </div>
-            <div>
-              <input
-                className="inp"
-                onChange={(e) => {
-                  setBreakfast(false);
-                }}
-                name="breakfast"
-                id="brkf2"
-                type="radio"
-              ></input>
-              <label className="lbl" htmlFor="brkf2">
-                Не
-              </label>
-            </div>
-            <label className="lbl" htmlFor="allinclusive">
-              Включен allinclusive:
-            </label>
-            <div>
-              <input
-                className="inp"
-                onChange={(e) => {
-                  setAllInclusive(true);
-                }}
-                name="allinclusive"
-                id="alli1"
-                type="radio"
-              ></input>
-              <label className="lbl" htmlFor="alli1">
-                Да
-              </label>
-            </div>
-            <div>
-              <input
-                className="inp"
-                onChange={(e) => {
-                  setAllInclusive(false);
-                }}
-                name="allinclusive"
-                id="alli2"
-                type="radio"
-              ></input>
-              <label className="lbl" htmlFor="alli2">
-                Не
-              </label>
-            </div>
-            <button className="btn formbtn" type="submit">
-              Добави
-            </button>
           </div>
-        </form>
-      ) : (
-        ""
-      )}
+          <label className="lbl" htmlFor="allinclusive">
+            Включен allinclusive:
+          </label>
+          <div>
+            <input
+              className="inp"
+              onChange={(e) => {
+                setAllInclusive(true);
+              }}
+              name="allinclusive"
+              id="alli1"
+              type="radio"
+            ></input>
+            <label className="lbl" htmlFor="alli1">
+              Да
+            </label>
+          </div>
+          <div>
+            <input
+              className="inp"
+              onChange={(e) => {
+                setAllInclusive(false);
+              }}
+              name="allinclusive"
+              id="alli2"
+              type="radio"
+            ></input>
+            <label className="lbl" htmlFor="alli2">
+              Не
+            </label>
+          </div>
+          <button className="btn formbtn" type="submit">
+            Добави
+          </button>
+        </div>
+      </form>
       <button
         className="btn addedit"
         onClick={() => {

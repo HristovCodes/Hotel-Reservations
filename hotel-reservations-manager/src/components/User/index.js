@@ -36,7 +36,7 @@ export default function User() {
   const formatUser = (usersData) => {
     return usersData ? (
       usersData.map((user) => (
-        <span class="datarow" key={user.id}>
+        <span className="datarow" key={user.id}>
           <p>{user.id}</p>
           <p>{user.username}</p>
           <p>{user.firstname}</p>
@@ -174,6 +174,7 @@ export default function User() {
 }
 function Form({ users, setUsers }) {
   const [open, setOpen] = useState(false);
+  const [uid, setUID] = useState("");
   const [id, setID] = useState("");
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -190,6 +191,7 @@ function Form({ users, setUsers }) {
     e.target.reset();
 
     if (
+      uid &&
       id &&
       username &&
       firstName &&
@@ -201,7 +203,7 @@ function Form({ users, setUsers }) {
     ) {
       // create the object and push it to the db
       let data = {};
-      data[id] = {
+      data[uid] = {
         id: id,
         username: username,
         firstname: firstName,
@@ -236,151 +238,158 @@ function Form({ users, setUsers }) {
 
   return (
     <div>
-      {open ? (
-        <form className="form splitform" onSubmit={addUser}>
-          <div className="partone">
-            <label className="lbl" htmlFor="id">
-              ЕГН:
-            </label>
+      <form className={open ? "form normalform" : "closed"} onSubmit={addUser}>
+        <div className="partone">
+          <label className="lbl" htmlFor="uid">
+            UID:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setUID(e.target.value);
+            }}
+            name="uid"
+            type="text"
+          ></input>
+          <label className="lbl" htmlFor="id">
+            ЕГН:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setID(e.target.value);
+            }}
+            name="id"
+            type="text"
+          ></input>
+          <label className="lbl" htmlFor="username">
+            Потребителско име:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
+            name="username"
+            type="text"
+          ></input>
+          <label className="lbl" htmlFor="firstName">
+            Име:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setFirstName(e.target.value);
+            }}
+            name="firstName"
+            type="text"
+          ></input>
+          <label className="lbl" htmlFor="middleName">
+            Бащино име:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setMiddleName(e.target.value);
+            }}
+            name="middleName"
+            type="text"
+          ></input>
+          <label className="lbl" htmlFor="lastName">
+            Фамилно име:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setLastName(e.target.value);
+            }}
+            name="lastName"
+            type="text"
+          ></input>
+        </div>
+        <div className="parttwo">
+          <label className="lbl" htmlFor="phoneNumber">
+            Телефон:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setPhoneNumber(e.target.value);
+            }}
+            name="phoneNumber"
+            type="text"
+          ></input>
+          <label className="lbl" htmlFor="email">
+            Имейл:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            name="email"
+            type="text"
+          ></input>
+          <label className="lbl" htmlFor="dateEmployed">
+            Дата на назначаване:
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setDateEmployed(e.target.value);
+            }}
+            name="dateEmployed"
+            type="date"
+          ></input>
+          <label className="lbl" htmlFor="active">
+            Статус:
+          </label>
+          <div>
             <input
               className="inp"
               onChange={(e) => {
-                setID(e.target.value);
+                setActive(true);
               }}
-              name="id"
-              type="text"
+              name="active"
+              id="act1"
+              type="radio"
+              value="Активен"
             ></input>
-            <label className="lbl" htmlFor="username">
-              Потребителско име:
+            <label className="lbl" htmlFor="act1">
+              Активен
             </label>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
-              name="username"
-              type="text"
-            ></input>
-            <label className="lbl" htmlFor="firstName">
-              Име:
-            </label>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setFirstName(e.target.value);
-              }}
-              name="firstName"
-              type="text"
-            ></input>
-            <label className="lbl" htmlFor="middleName">
-              Бащино име:
-            </label>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setMiddleName(e.target.value);
-              }}
-              name="middleName"
-              type="text"
-            ></input>
-            <label className="lbl" htmlFor="lastName">
-              Фамилно име:
-            </label>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setLastName(e.target.value);
-              }}
-              name="lastName"
-              type="text"
-            ></input>
           </div>
-          <div className="parttwo">
-            <label className="lbl" htmlFor="phoneNumber">
-              Телефон:
-            </label>
+          <div>
             <input
               className="inp"
               onChange={(e) => {
-                setPhoneNumber(e.target.value);
+                setActive(false);
               }}
-              name="phoneNumber"
-              type="text"
+              name="active"
+              id="act2"
+              type="radio"
+              value="Уволнен"
             ></input>
-            <label className="lbl" htmlFor="email">
-              Имейл:
+            <label className="lbl" htmlFor="act2">
+              Не активен
             </label>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              name="email"
-              type="text"
-            ></input>
-            <label className="lbl" htmlFor="dateEmployed">
-              Дата на назначаване:
-            </label>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setDateEmployed(e.target.value);
-              }}
-              name="dateEmployed"
-              type="date"
-            ></input>
-            <label className="lbl" htmlFor="active">
-              Статус:
-            </label>
-            <div>
-              <input
-                className="inp"
-                onChange={(e) => {
-                  setActive(true);
-                }}
-                name="active"
-                id="act1"
-                type="radio"
-                value="Активен"
-              ></input>
-              <label className="lbl" htmlFor="act1">
-                Активен
-              </label>
-            </div>
-            <div>
-              <input
-                className="inp"
-                onChange={(e) => {
-                  setActive(false);
-                }}
-                name="active"
-                id="act2"
-                type="radio"
-                value="Уволнен"
-              ></input>
-              <label className="lbl" htmlFor="act2">
-                Не активен
-              </label>
-            </div>
-            <label className="lbl" htmlFor="releaseDate">
-              <span>Пуснат от длъжност на:</span>
-            </label>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setReleaseDate(e.target.value);
-              }}
-              name="releaseDate"
-              type="date"
-            ></input>
-            <button className="btn formbtn" type="submit">
-              Добави
-            </button>
           </div>
-        </form>
-      ) : (
-        ""
-      )}
+          <label className="lbl" htmlFor="releaseDate">
+            <span>Пуснат от длъжност на:</span>
+          </label>
+          <input
+            className="inp"
+            onChange={(e) => {
+              setReleaseDate(e.target.value);
+            }}
+            name="releaseDate"
+            type="date"
+          ></input>
+          <button className="btn formbtn" type="submit">
+            Добави
+          </button>
+        </div>
+      </form>
       <button
         className="btn addedit"
         onClick={() => {

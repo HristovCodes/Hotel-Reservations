@@ -36,28 +36,15 @@ export default function Room() {
   const formatRoom = (roomsData) => {
     return roomsData ? (
       roomsData.map((room) => (
-        <span class="datarow" key={room.number}>
-          <p>{room.capacity}</p>
-          <p>{room.type}</p>
-          <p>{room.occupied.toString()}</p>
-          <p>{room.adult}</p>
-          <p>{room.kid}</p>
-          <p>{room.number}</p>
-          <p
-            className="action"
-            onClick={() => {
-              deleteData("room", room.number);
-              let temp = rooms.slice();
-              temp.splice(temp.indexOf(room), 1);
-              setRooms(temp);
-            }}
-          >
-            Delete
-          </p>
-        </span>
+        <RoomRow
+          key={room.number}
+          data={room}
+          rooms={rooms}
+          setRooms={setRooms}
+        ></RoomRow>
       ))
     ) : (
-      <span className="datarow"></span>
+      <span className="datarow" key="000"></span>
     );
   };
 
@@ -190,103 +177,99 @@ function Form({ rooms, setRooms }) {
   };
   return (
     <div>
-      {open ? (
-        <form className="form normalform" onSubmit={addRoom}>
-          <label className="lbl" htmlFor="capacity">
-            Капацитет:
-          </label>
+      <form className={open ? "form normalform" : "closed"} onSubmit={addRoom}>
+        <label className="lbl" htmlFor="capacity">
+          Капацитет:
+        </label>
+        <input
+          className="inp"
+          onChange={(e) => {
+            setCapacity(e.target.value);
+          }}
+          name="capacity"
+          type="text"
+        ></input>
+        <label className="lbl" htmlFor="type">
+          Тип:
+        </label>
+        <input
+          className="inp"
+          onChange={(e) => {
+            setType(e.target.value);
+          }}
+          name="type"
+          type="text"
+        ></input>
+        <label className="lbl" htmlFor="occupied">
+          Свободна:
+        </label>
+        <div>
           <input
             className="inp"
             onChange={(e) => {
-              setCapacity(e.target.value);
+              setOccupied(true);
             }}
-            name="capacity"
-            type="text"
+            name="occupied"
+            id="occ1"
+            type="radio"
+            value="Активен"
           ></input>
-          <label className="lbl" htmlFor="type">
-            Тип:
+          <label className="lbl" htmlFor="occ1">
+            Да
           </label>
+        </div>
+        <div>
           <input
             className="inp"
             onChange={(e) => {
-              setType(e.target.value);
+              setOccupied(false);
             }}
-            name="type"
-            type="text"
+            name="occupied"
+            id="occ2"
+            type="radio"
+            value="Уволнен"
           ></input>
-          <label className="lbl" htmlFor="occupied">
-            Свободна:
+          <label className="lbl" htmlFor="occ2">
+            Не
           </label>
-          <div>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setOccupied(true);
-              }}
-              name="occupied"
-              id="occ1"
-              type="radio"
-              value="Активен"
-            ></input>
-            <label className="lbl" htmlFor="occ1">
-              Да
-            </label>
-          </div>
-          <div>
-            <input
-              className="inp"
-              onChange={(e) => {
-                setOccupied(false);
-              }}
-              name="occupied"
-              id="occ2"
-              type="radio"
-              value="Уволнен"
-            ></input>
-            <label className="lbl" htmlFor="occ2">
-              Не
-            </label>
-          </div>
-          <label className="lbl" htmlFor="adult">
-            Цена за възрастен на легло:
-          </label>
-          <input
-            className="inp"
-            onChange={(e) => {
-              setAdult(e.target.value);
-            }}
-            name="adult"
-            type="text"
-          ></input>
-          <label className="lbl" htmlFor="kid">
-            Цена за дете на легло:
-          </label>
-          <input
-            className="inp"
-            onChange={(e) => {
-              setKid(e.target.value);
-            }}
-            name="kid"
-            type="text"
-          ></input>
-          <label className="lbl" htmlFor="number">
-            Номер на стаята:
-          </label>
-          <input
-            className="inp"
-            onChange={(e) => {
-              setNumber(e.target.value);
-            }}
-            name="number"
-            type="text"
-          ></input>
-          <button className="btn formbtn" type="submit">
-            Добави
-          </button>
-        </form>
-      ) : (
-        ""
-      )}
+        </div>
+        <label className="lbl" htmlFor="adult">
+          Цена за възрастен на легло:
+        </label>
+        <input
+          className="inp"
+          onChange={(e) => {
+            setAdult(e.target.value);
+          }}
+          name="adult"
+          type="text"
+        ></input>
+        <label className="lbl" htmlFor="kid">
+          Цена за дете на легло:
+        </label>
+        <input
+          className="inp"
+          onChange={(e) => {
+            setKid(e.target.value);
+          }}
+          name="kid"
+          type="text"
+        ></input>
+        <label className="lbl" htmlFor="number">
+          Номер на стаята:
+        </label>
+        <input
+          className="inp"
+          onChange={(e) => {
+            setNumber(e.target.value);
+          }}
+          name="number"
+          type="text"
+        ></input>
+        <button className="btn formbtn" type="submit">
+          Добави
+        </button>
+      </form>
       <button
         className="btn addedit"
         onClick={() => {
@@ -296,5 +279,38 @@ function Form({ rooms, setRooms }) {
         {open ? "Close form" : "Add/Edit client"}
       </button>
     </div>
+  );
+}
+
+function RoomRow({ data, rooms, setRooms }) {
+  const [occupied, setOccupied] = useState(data.occupied);
+  return (
+    <span className="datarow">
+      <p>{data.capacity}</p>
+      <p>{data.type}</p>
+      <p
+        className="clickable"
+        onClick={() => {
+          setData(`room/${data.number}`, { occupied: !occupied });
+          setOccupied(!occupied);
+        }}
+      >
+        {occupied.toString()}
+      </p>
+      <p>{data.adult}</p>
+      <p>{data.kid}</p>
+      <p>{data.number}</p>
+      <p
+        className="action clickable"
+        onClick={() => {
+          deleteData("room", data.number);
+          let temp = rooms.slice();
+          temp.splice(temp.indexOf(data), 1);
+          setRooms(temp);
+        }}
+      >
+        Delete
+      </p>
+    </span>
   );
 }
