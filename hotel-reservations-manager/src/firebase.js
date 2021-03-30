@@ -24,7 +24,11 @@ export function setData(path, data) {
 }
 
 export async function deleteData(path, id) {
-  firebase.database().ref(`${path}/${id}`).remove();
+  firebase
+    .database()
+    .ref(`${path}/${id}`)
+    .remove()
+    .catch((e) => console.log(e.message));
 }
 
 export async function orderData(path, query, ammount) {
@@ -52,6 +56,20 @@ export async function pullData(path, query) {
     .ref(`${path}/`)
     .orderByChild(query)
     .once("value");
+
+  if (response.code) {
+    throw new Error(response.code);
+  } else {
+    const data = [];
+    response.forEach((v) => {
+      data.push(v.val());
+    });
+    return data;
+  }
+}
+
+export async function pullUserData(id) {
+  let response = await firebase.database().ref(`user/${id}/`).once("value");
 
   if (response.code) {
     throw new Error(response.code);

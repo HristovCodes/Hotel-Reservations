@@ -2,12 +2,16 @@
   .list {
     display: flex;
     flex-direction: column;
+
+    .clickable {
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
     .columns {
       background-color: lighten($color: #121212, $amount: 3);
       font-weight: 600;
-      .clickable {
-        cursor: pointer;
-      }
     }
     .datarow:nth-child(even) {
       background-color: darken($color: #121212, $amount: 5);
@@ -105,4 +109,8 @@
     margin: 5px 0;
     align-self: flex-end;
   }
+}
+
+.closed {
+  display: none;
 }
