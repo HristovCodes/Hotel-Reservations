@@ -34,34 +34,18 @@ export default function User() {
   };
 
   const formatUser = (usersData) => {
+    console.log(usersData);
     return usersData ? (
       usersData.map((user) => (
-        <span className="datarow" key={user.id}>
-          <p>{user.id}</p>
-          <p>{user.username}</p>
-          <p>{user.firstname}</p>
-          <p>{user.middlename}</p>
-          <p>{user.lastname}</p>
-          <p>{user.email.slice(0, user.email.indexOf("@"))}</p>
-          <p>{user.phonenumber}</p>
-          <p>{user.dateemployed}</p>
-          <p>{user.active.toString()}</p>
-          {user.releasedate ? <p>{user.releasedate}</p> : <p>-</p>}
-          <p
-            className="action"
-            onClick={() => {
-              deleteData("user", user.id);
-              let temp = users.slice();
-              temp.splice(temp.indexOf(user), 1);
-              setUsers(temp);
-            }}
-          >
-            Delete
-          </p>
-        </span>
+        <UserRow
+          key={user.uid}
+          data={user}
+          users={users}
+          setUsers={setUsers}
+        ></UserRow>
       ))
     ) : (
-      <span className="datarow"></span>
+      <span className="datarow" key="000"></span>
     );
   };
 
@@ -172,6 +156,7 @@ export default function User() {
     </div>
   );
 }
+
 function Form({ users, setUsers }) {
   const [open, setOpen] = useState(false);
   const [uid, setUID] = useState("");
@@ -205,6 +190,7 @@ function Form({ users, setUsers }) {
       let data = {};
       data[uid] = {
         id: id,
+        uid: uid,
         username: username,
         firstname: firstName,
         middlename: middleName,
@@ -222,14 +208,14 @@ function Form({ users, setUsers }) {
       let match = false;
       temp.forEach((u) => {
         if (Object.values(u).includes(phoneNumber)) {
-          temp[temp.indexOf(u)] = data[id];
+          temp[temp.indexOf(u)] = data[uid];
           setUsers(temp);
           setOpen(false);
           match = true;
         }
       });
       if (!match) {
-        temp.push(data[id]);
+        temp.push(data[uid]);
         setUsers(temp);
         setOpen(false);
       }
@@ -238,7 +224,7 @@ function Form({ users, setUsers }) {
 
   return (
     <div>
-      <form className={open ? "form normalform" : "closed"} onSubmit={addUser}>
+      <form className={open ? "form splitform" : "closed"} onSubmit={addUser}>
         <div className="partone">
           <label className="lbl" htmlFor="uid">
             UID:
@@ -399,5 +385,42 @@ function Form({ users, setUsers }) {
         {open ? "Close form" : "Add/Edit client"}
       </button>
     </div>
+  );
+}
+
+function UserRow({ data, users, setUsers, uid }) {
+  const [active, setActive] = useState(data.active);
+  return (
+    <span className="datarow">
+      <p>{data.id}</p>
+      <p>{data.username}</p>
+      <p>{data.firstname}</p>
+      <p>{data.middlename}</p>
+      <p>{data.lastname}</p>
+      <p>{data.email.slice(0, data.email.indexOf("@"))}</p>
+      <p>{data.phonenumber}</p>
+      <p>{data.dateemployed}</p>
+      <p
+        className="clickable"
+        onClick={() => {
+          setData(`user/${data.uid}`, { active: !active });
+          setActive(!active);
+        }}
+      >
+        {active.toString()}
+      </p>
+      {data.releasedate ? <p>{data.releasedate}</p> : <p>-</p>}
+      <p
+        className="action"
+        onClick={() => {
+          deleteData("user", data.id);
+          let temp = users.slice();
+          temp.splice(temp.indexOf(data), 1);
+          setUsers(temp);
+        }}
+      >
+        Delete
+      </p>
+    </span>
   );
 }
