@@ -17,9 +17,9 @@
 ![Screenshot of menu page](./menu.png)
 
 ## Features:
-- feature 1
-- feature 2
-- feature 3
-- feature 4
-- feature 5
-- feature 6
+- per role permissions
+- accounts system (managed by an admin)
+- ability to add new users, clients, reservations and rooms
+- edit stuff 
+- pagination, searching, filtering and sorting of all data
+- reservation price is automatically calculated (no more calculations on paper!)
