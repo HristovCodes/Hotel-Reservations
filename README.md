@@ -2,6 +2,9 @@
 
 ## This app is my project submission for the final exam of [IT Kariera](https://it-kariera.mon.bg/).
 
+## Running the project
+`$npm run start`
+
 ## Features:
 - per role permissions
 - accounts system (managed by an admin)
